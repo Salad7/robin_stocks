@@ -161,6 +161,7 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
             mfaResponse["url"] = url
             mfaResponse["action"] = "mfa_required"
             mfaResponse["pickle_path"] = pickle_path
+            print("GAHHHHHHHHHH")
             return mfaResponse
             # res = request_post(url, payload, jsonify_data=False)
             # while (res.status_code != 200):
@@ -200,9 +201,11 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
 
 def updateMFA(ur,pl,pickle_path):
     #Make sure PL Contains mfa_code
+    print("Pickle path: "+pickle_path)
+    print("PL: "+str(p;))
     res = request_post(ur, pl, jsonify_data=False)
     data = res.json()
-    print(str(data))
+    # print(str(data))
     if 'access_token' in data:
         token = '{0} {1}'.format(data['token_type'], data['access_token'])
         update_session('Authorization', token)
@@ -213,6 +216,7 @@ def updateMFA(ur,pl,pickle_path):
                          'access_token': data['access_token'],
                          'refresh_token': data['refresh_token'],
                          'device_token': pl['device_token']}, f)
+        return 1
 
 
 @login_required
