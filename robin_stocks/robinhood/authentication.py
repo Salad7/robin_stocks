@@ -199,7 +199,7 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
         raise Exception('Error: Trouble connecting to robinhood API. Check internet connection.')
     return(data)
 
-def updateMFA(ur,pl,pickle_path):
+def updateeMFA(ur,pl,pickle_path):
     #Make sure PL Contains mfa_code
     print("------ Pickle path: "+pickle_path)
     print("------- PL: "+str(p))
