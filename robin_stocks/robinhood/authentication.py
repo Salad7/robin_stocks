@@ -161,7 +161,7 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
             mfaResponse["url"] = url
             mfaResponse["action"] = "mfa_required"
             mfaResponse["pickle_path"] = pickle_path
-            print("GAHHHHHHHHHH DAMN")
+            print("GAHHHHHHHHHH DAMN BABY")
             return mfaResponse
             # res = request_post(url, payload, jsonify_data=False)
             # while (res.status_code != 200):
