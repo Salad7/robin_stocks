@@ -202,7 +202,7 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
 def updateMFA(ur,pl,pickle_path):
     #Make sure PL Contains mfa_code
     print("------ Pickle path: "+pickle_path)
-    print("------- PL: "+str(p))
+    print("------- PL: "+str(pl))
     res = request_post(ur, pl, jsonify_data=False)
     data = res.json()
     # print(str(data))
