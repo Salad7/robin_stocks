@@ -161,7 +161,7 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
             mfaResponse["url"] = url
             mfaResponse["action"] = "mfa_required"
             mfaResponse["pickle_path"] = pickle_path
-            print("GAHHHHHHHHHH")
+            print("GAHHHHHHHHHH DAMN")
             return mfaResponse
             # res = request_post(url, payload, jsonify_data=False)
             # while (res.status_code != 200):
@@ -199,7 +199,7 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
         raise Exception('Error: Trouble connecting to robinhood API. Check internet connection.')
     return(data)
 
-def updateeMFA(ur,pl,pickle_path):
+def updateMFA(ur,pl,pickle_path):
     #Make sure PL Contains mfa_code
     print("------ Pickle path: "+pickle_path)
     print("------- PL: "+str(p))
