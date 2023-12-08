@@ -217,6 +217,8 @@ def updateMFA(ur,pl,pickle_path):
                          'refresh_token': data['refresh_token'],
                          'device_token': pl['device_token']}, f)
         return 1
+    else:
+        return "No access_token found"
 
 
 @login_required
