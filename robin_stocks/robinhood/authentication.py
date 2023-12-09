@@ -233,7 +233,7 @@ def updateMFA(ur,pl,pickle_path,sms_code=None,challenge_id=None):
         print("User is trying to enter Challenge code")
         #Make sure PL Contains mfa_code
         print("------ Pickle path 2: "+pickle_path)
-        print("------- PL 3 : "+str(pl))
+        print("------- PL 4 : "+str(pl))
         res = respond_to_challenge(challenge_id, sms_code)
         update_session('X-ROBINHOOD-CHALLENGE-RESPONSE-ID', challenge_id)
         data = request_post(ur, payload)
