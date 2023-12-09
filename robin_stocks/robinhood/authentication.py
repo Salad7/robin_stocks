@@ -174,10 +174,10 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
         elif 'challenge' in data:
             mfaResponse = {}
             mfaResponse["challenge"] = data['challenge']['id']
-            mfa["url"] = url
-            mfa["pickle_path"] = pickle_path
-            mfa["action"] = "challenge_required"
-            mfa["payload"] = payload
+            mfaResponse["url"] = url
+            mfaResponse["pickle_path"] = pickle_path
+            mfaResponse["action"] = "challenge_required"
+            mfaResponse["payload"] = payload
             print("GAHHHHHHHHHH DAMN BABY PT2")
             return mfaResponse
             # sms_code = input('Enter Robinhood code for validation: ')
@@ -207,7 +207,7 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
         raise Exception('Error: Trouble connecting to robinhood API. Check internet connection.')
     return(data)
 
-def updateMFA(ur,pl,pickle_path,challenge_id=None,sms_code=None):
+def updateMFA(ur,pl,pickle_path,sms_code=None,challenge_id=None):
     if challenge_id == None:
         print("User is trying to enter Auth code")
         #Make sure PL Contains mfa_code
