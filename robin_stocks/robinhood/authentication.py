@@ -3,7 +3,8 @@ import getpass
 import os
 import pickle
 import random
-
+import firebase_admin
+from firebase_admin import credentials, db
 from robin_stocks.robinhood.helper import *
 from robin_stocks.robinhood.urls import *
 
@@ -50,7 +51,7 @@ def respond_to_challenge(challenge_id, sms_code):
     return(request_post(url, payload))
 
 
-def login(username=None, password=None, expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name=""):
+def login(username=None, password=None, expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name="", stockaiusername=None):
     """This function will effectively log the user into robinhood by getting an
     authentication token and saving it to the session header. By default, it
     will store the authentication token in a pickle file and load that value
@@ -113,6 +114,9 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
         # Loading pickle file will fail if the acess_token has expired.
         if store_session:
             try:
+                # Try to get the pickle data from firebase
+                print("loginUser: StockAI Username: "+stockaiusername)
+                getPickleFileFromFirebase(username,stockaiusername)
                 with open(pickle_path, 'rb') as f:
                     pickle_data = pickle.load(f)
                     access_token = pickle_data['access_token']
@@ -122,6 +126,7 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
                     pickle_device_token = pickle_data['device_token']
                     payload['device_token'] = pickle_device_token
                     # Set login status to True in order to try and get account info.
+                    # savePickleFileToFirebase(username,pickle_name,stockaiusername)
                     set_login_state(True)
                     update_session(
                         'Authorization', '{0} {1}'.format(token_type, access_token))
@@ -208,7 +213,27 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
         raise Exception('Error: Trouble connecting to robinhood API. Check internet connection.')
     return(data)
 
-def updateMFA(ur,pl,pickle_path,sms_code=None,challenge_id=None):
+def savePickleFileToFirebase(username,pickle_data,stockaiusername):
+    # Initialize the app with a service account
+    cred = credentials.Certificate('firebaseServerAccount.json')
+    firebase_admin.initialize_app(cred, {
+        'databaseURL': 'https://latte-d25b7.firebaseio.com'
+    })
+    ref = db.reference('/Clients/Account/'+stockaiusername+'/Broker/PickleFile')
+    ref.set({'pickle': pickle_data})
+
+def getPickleFileFromFirebase(username,stockaiusername):
+    cred = credentials.Certificate('firebaseServerAccount.json')
+    firebase_admin.initialize_app(cred, {
+        'databaseURL': 'https://latte-d25b7.firebaseio.com'
+    })
+    ref = db.reference('/Clients/Account/'+stockaiusername+'/Broker/PickleFile')
+    data = ref.get()
+    print("Pickle file data: "+str(data))
+
+
+
+def updateMFA(ur,pl,pickle_path,sms_code=None,challenge_id=None,stockaiusername=None):
     if challenge_id == None:
         print("User is trying to enter Auth code")
         #Make sure PL Contains mfa_code
@@ -227,6 +252,11 @@ def updateMFA(ur,pl,pickle_path,sms_code=None,challenge_id=None):
                              'access_token': data['access_token'],
                              'refresh_token': data['refresh_token'],
                              'device_token': pl['device_token']}, f)
+                pd = {'token_type': data['token_type'],
+                             'access_token': data['access_token'],
+                             'refresh_token': data['refresh_token'],
+                             'device_token': pl['device_token']
+                savePickleFileToFirebase(username,pd,stockaiusername)
                 return 1
         else:
             return "No access_token found"
@@ -249,6 +279,11 @@ def updateMFA(ur,pl,pickle_path,sms_code=None,challenge_id=None):
                              'access_token': data['access_token'],
                              'refresh_token': data['refresh_token'],
                              'device_token': pl['device_token']}, f)
+                pd = {'token_type': data['token_type'],
+                             'access_token': data['access_token'],
+                             'refresh_token': data['refresh_token'],
+                             'device_token': pl['device_token']
+                savePickleFileToFirebase(username,pd,stockaiusername)
                 return 1
         else:
             return "No access_token found"
