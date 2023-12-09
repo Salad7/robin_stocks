@@ -50,7 +50,7 @@ def respond_to_challenge(challenge_id, sms_code):
     return(request_post(url, payload))
 
 
-def login(username=None, password=None, expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name=""):
+def login(=None, password=None, expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name=""):
     """This function will effectively log the user into robinhood by getting an
     authentication token and saving it to the session header. By default, it
     will store the authentication token in a pickle file and load that value
@@ -130,6 +130,7 @@ def login(username=None, password=None, expiresIn=86400, scope='internal', by_sm
                         positions_url(), 'pagination', {'nonzero': 'true'}, jsonify_data=False)
                     # Raises exception is response code is not 200.
                     res.raise_for_status()
+                    print("Found open session for: "+username)
                     return({'access_token': access_token, 'token_type': token_type,
                             'expires_in': expiresIn, 'scope': scope, 'detail': 'logged in using authentication in {0}'.format(creds_file),
                             'backup_code': None, 'refresh_token': refresh_token})
@@ -215,7 +216,7 @@ def updateMFA(ur,pl,pickle_path,sms_code=None,challenge_id=None):
         print("------- PL 2: "+str(pl))
         res = request_post(ur, pl, jsonify_data=False)
         data = res.json()
-        # print(str(data))
+        print(str(data))
         if 'access_token' in data:
             token = '{0} {1}'.format(data['token_type'], data['access_token'])
             update_session('Authorization', token)
